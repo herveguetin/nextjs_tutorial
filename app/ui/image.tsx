@@ -7,7 +7,7 @@ export default function ResponsiveImage(
     alt
   }: { desktop: { src: string, width: number, height: number }; mobile: { src: string, width: number, height: number }; alt: string }) {
   return (
-    <div>
+    <>
       <Image
         src={desktop.src}
         alt={alt}
@@ -22,6 +22,6 @@ export default function ResponsiveImage(
         width={mobile.width}
         height={mobile.height}
       />
-    </div>
+    </>
   );
 }
