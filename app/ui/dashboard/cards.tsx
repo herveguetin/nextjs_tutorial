@@ -14,6 +14,8 @@ const iconMap = {
   invoices: InboxIcon,
 };
 
+type CardType = 'invoices' | 'customers' | 'pending' | 'collected';
+
 export default async function CardWrapper() {
   const {
     numberOfCustomers,
@@ -22,18 +24,37 @@ export default async function CardWrapper() {
     totalPendingInvoices
   } = await fetchCardData();
 
+  let cards: ({ title: string; type: CardType; value: string | number })[];
+  cards = [
+    {
+      title: "Collected",
+      value: totalPaidInvoices,
+      type: "collected"
+    },
+    {
+      title: "Pending",
+      value: totalPendingInvoices,
+      type: "pending"
+    },
+    {
+      title: "Total invoices",
+      value: numberOfInvoices,
+      type: "invoices"
+    },
+    {
+      title: "Total customers",
+      value: numberOfCustomers,
+      type: "customers"
+    },
+  ];
+
   return (
     <>
-      {/* NOTE: comment in this code when you get to this point in the course */}
-
-      <Card title="Collected" value={totalPaidInvoices} type="collected"/>
-      <Card title="Pending" value={totalPendingInvoices} type="pending"/>
-      <Card title="Total Invoices" value={numberOfInvoices} type="invoices"/>
-      <Card
-        title="Total Customers"
-        value={numberOfCustomers}
-        type="customers"
-      />
+      {cards?.map((card) => (
+        <div key={card.type}>
+          <Card title={card.title} value={card.value} type={card.type}/>
+        </div>
+      ))}
     </>
   );
 }
@@ -45,7 +66,7 @@ export function Card({
 }: {
   title: string;
   value: number | string;
-  type: 'invoices' | 'customers' | 'pending' | 'collected';
+  type: CardType;
 }) {
   const Icon = iconMap[type];
 
