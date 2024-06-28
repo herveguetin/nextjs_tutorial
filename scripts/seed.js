@@ -166,32 +166,15 @@ async function seedCartLines(client) {
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS cart_lines (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        cart_id SMALLINT NOT NULL,
+        cart_id UUID NOT NULL,
         qty SMALLINT DEFAULT 0 NOT NULL
       );
     `;
 
     console.log(`Created "cart_lines" table`);
-    const cartLines = []
-    for (let i = 0; i < 5; i++) {
-      cartLines.push({
-        cart_id: 1
-      })
-    }
-    const insertedCartLines = await Promise.all(
-      cartLines.map(
-        (cartLine) => client.sql`
-        INSERT INTO cart_lines (cart_id)
-        VALUES (${cartLine.cart_id})
-      `,
-      ),
-    );
-
-    console.log(`Seeded ${insertedCartLines.length} customers`);
 
     return {
-      createTable,
-      customers: insertedCartLines,
+      createTable
     };
   } catch (error) {
     console.error('Error seeding cart lines:', error);
