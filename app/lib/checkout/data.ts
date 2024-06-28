@@ -23,7 +23,7 @@ export async function fetchCartLines() {
 export async function fetchCheckoutData() {
   const cartLines = await fetchCartLines()
   const sumQty: number = cartLines.rows.reduce((accumulator: number, currentValue: QueryResultRow) => accumulator + currentValue.qty, 0);
-  return { items: { count: sumQty } };
+  return { items: { count: sumQty }, cartLines: cartLines.rows };
 }
 
 export async function addToCart(sku: string, qty: number) {
