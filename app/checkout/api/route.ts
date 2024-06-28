@@ -14,6 +14,6 @@ async function assertCart() {
 export async function POST(request: Request) {
   await assertCart()
   const payload = await request.json()
-  const checkoutData = await addToCart(payload.qty)
+  const checkoutData = await addToCart(payload.sku, payload.qty)
   return Response.json(checkoutData)
 }

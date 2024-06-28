@@ -26,14 +26,14 @@ export async function fetchCheckoutData() {
   return { items: { count: sumQty } };
 }
 
-export async function addToCart(qty: number) {
+export async function addToCart(sku: string, qty: number) {
   try {
     let cartLines = await fetchCartLines()
     const cartId = cartLines.rows.length ? cartLines.rows[0].cart_id : await getCartId()
 
     await sql`
-        INSERT INTO cart_lines (cart_id, qty)
-        VALUES (${cartId}, ${qty})`
+        INSERT INTO cart_lines (cart_id, sku, qty)
+        VALUES (${cartId}, ${sku}, ${qty})`
 
     return await fetchCheckoutData()
   } catch (error) {

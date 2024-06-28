@@ -8,14 +8,15 @@ let addedQty: number = 1
 
 type Props = {
   qty?: number;
+  sku: string;
 }
 
-export default function AddToCartButton({ qty }: Props) {
+export default function AddToCartButton({ qty, sku }: Props) {
   const [isLoading, setIsLoading] = useState(false);
 
   async function onButtonClick() {
     setIsLoading(true)
-    const checkoutData: CheckoutData = await addToCart(addedQty)
+    const checkoutData: CheckoutData = await addToCart(sku, addedQty)
     window.dispatchEvent(new CustomEvent('checkout:updated', { detail: { checkoutData: checkoutData } }))
     setIsLoading(false)
   }
