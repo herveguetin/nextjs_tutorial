@@ -1,5 +1,5 @@
 import { fetchProducts } from "@/app/lib/products/data";
-import AddToCartButton from '@/app/ui/add-to-cart'
+import AddToCart from '@/app/ui/add-to-cart'
 import { formatCurrency } from "@/app/lib/utils";
 import ResponsiveImage from '@/app/ui/image';
 
@@ -8,7 +8,8 @@ export default async function ProductList() {
   return (
     <div className="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4">
       {products?.map((product) => (
-        <div key={product.id} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <div key={product.id}
+             className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
           <ResponsiveImage
             desktop={{ src: product.image, width: 550, height: 600 }}
             mobile={{ src: product.image, width: 550, height: 600 }}
@@ -27,9 +28,9 @@ export default async function ProductList() {
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{product.sku}</p>
             </li>
           </ul>
+          <p className="mt-4 text-2xl font-extrabold leading-tight text-gray-900 dark:text-white">{formatCurrency(product.price * 100)}</p>
           <div className="mt-4 flex items-center justify-between gap-4">
-            <p className="text-2xl font-extrabold leading-tight text-gray-900 dark:text-white">{formatCurrency(product.price * 100)}</p>
-            <AddToCartButton sku={product.sku}/>
+            <AddToCart sku={product.sku}/>
           </div>
         </div>
       ))}
