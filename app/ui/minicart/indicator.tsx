@@ -1,9 +1,9 @@
 import { fetchCheckoutData } from "@/app/lib/checkout/data";
-import IndicatorContent from "@/app/ui/minicart/indicator-content";
+import IndicatorClient from "@/app/ui/minicart/client/indicator";
 
 export default async function Indicator() {
   const checkoutData = await fetchCheckoutData();
   return (<>
-    <IndicatorContent checkoutData={checkoutData}/>
+    <IndicatorClient checkoutData={checkoutData}/>
   </>);
 }

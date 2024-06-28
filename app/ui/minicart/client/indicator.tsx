@@ -4,7 +4,7 @@ import { CheckoutData } from "@/app/lib/checkout/definitions";
 import { useEffect, useState } from 'react';
 import { ShoppingCartIcon } from '@heroicons/react/24/solid';
 
-export default function IndicatorContent({ checkoutData }: { checkoutData: CheckoutData }) {
+export default function Indicator({ checkoutData }: { checkoutData: CheckoutData }) {
   const [loadedData, setLoadedData] = useState(checkoutData);
 
   useEffect(() => {

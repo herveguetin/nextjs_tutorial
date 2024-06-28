@@ -2,7 +2,7 @@ import { fetchProducts } from "@/app/lib/products/data";
 import AddToCart from '@/app/ui/add-to-cart'
 import { formatCurrency } from "@/app/lib/utils";
 import ResponsiveImage from '@/app/ui/image';
-import CartCount from "@/app/ui/products/cart-count";
+import CartCount from "@/app/ui/products/client/cart-count";
 import { fetchCheckoutData } from "@/app/lib/checkout/data";
 
 export default async function ProductList() {
