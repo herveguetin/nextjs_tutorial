@@ -3,8 +3,7 @@ import { addToCart } from '@/app/lib/checkout/ajax'
 import { Button } from '@/app/ui/button';
 import { ChangeEvent, useState } from "react";
 import { CheckoutData } from "@/app/lib/checkout/definitions";
-
-let addedQty: number = 1
+import pubSub from "@/app/lib/utils/pubsub";
 
 type Props = {
   qty?: number; sku: string;
@@ -17,7 +16,7 @@ export default function AddToCart({ qty, sku }: Props) {
   async function onButtonClick() {
     setIsLoading(true)
     const checkoutData: CheckoutData = await addToCart(sku, addedQty)
-    window.dispatchEvent(new CustomEvent('checkout:updated', { detail: { checkoutData: checkoutData } }))
+    pubSub.emit()('checkout:updated', { detail: { checkoutData } })
     setIsLoading(false)
   }
 
