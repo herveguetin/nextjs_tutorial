@@ -1,15 +1,5 @@
-import { addToCart } from '@/app/lib/checkout/data'
-import { getSessionData } from "@/app/lib/checkout/session";
-// @ts-ignore
-import { v4 as uuidv4 } from 'uuid';
-
-async function assertCart() {
-  const session = await getSessionData()
-  if (!session?.cart?.id) {
-    session.cart = { id: uuidv4() }
-    await session.save();
-  }
-}
+import { addToCart, removeFromCart } from '@/app/lib/checkout/data'
+import { assertCart } from '@/app/lib/checkout/session'
 
 export async function POST(request: Request) {
   await assertCart()
@@ -17,3 +7,10 @@ export async function POST(request: Request) {
   const checkoutData = await addToCart(payload.sku, payload.qty)
   return Response.json(checkoutData)
 }
+
+export async function DELETE(request: Request) {
+  const payload = await request.json()
+  const checkoutData = await removeFromCart(payload.sku)
+  return Response.json(checkoutData)
+}
+

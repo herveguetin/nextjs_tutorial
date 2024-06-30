@@ -3,8 +3,10 @@ import { Suspense } from "react";
 import DashboardSkeleton from '@/app/ui/skeletons';
 import ProductList from "@/app/ui/products/product-list";
 import Indicator from "@/app/ui/minicart/indicator";
+import Drawer from "@/app/ui/minicart/drawer";
 export default async function Page() {
   return (<main>
+    <Drawer/>
     <div className="flex">
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
         Products

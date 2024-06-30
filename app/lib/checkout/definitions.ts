@@ -1,8 +1,14 @@
 import { QueryResultRow } from "@vercel/postgres";
 
 export type CheckoutData = {
-  items: {
-    count: number
+  totals: {
+    itemsCount: number,
+    total: number,
+    discount: number,
+    shipping: number,
+    tax: number,
+    grandTotal: number
   }
-  cartLines: QueryResultRow[] | []
+  cartLines: QueryResultRow[] | [],
+  [productLines: string]: any
 };

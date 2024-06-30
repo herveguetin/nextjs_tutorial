@@ -25,7 +25,7 @@ export default function AddToCart({ qty, sku }: Props) {
   }
 
   return (<>
-      <select onChange={onQtyChange} value="1" id={`${sku}_qty`} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5">
+      <select onChange={onQtyChange} id={`${sku}_qty`} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-20 p-2.5">
         <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
