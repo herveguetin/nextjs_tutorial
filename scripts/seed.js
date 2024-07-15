@@ -163,66 +163,6 @@ async function seedRevenue(client) {
   }
 }
 
-async function seedCartLines(client) {
-  try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS cart_lines (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        cart_id UUID NOT NULL,
-        sku VARCHAR(255) NOT NULL,
-        qty SMALLINT DEFAULT 0 NOT NULL
-      );
-    `;
-
-    console.log(`Created "cart_lines" table`);
-
-    return {
-      createTable
-    };
-  } catch (error) {
-    console.error('Error seeding cart lines:', error);
-    throw error;
-  }
-}
-
-async function seedProducts(client) {
-  try {
-    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-    const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS products (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        sku VARCHAR(255) NOT NULL,
-        price FLOAT NOT NULL,
-        image VARCHAR(255)
-      );
-    `;
-
-    console.log(`Created "products" table`);
-
-    const insertedProducts = await Promise.all(
-      products.map(async (product) => {
-        return client.sql`
-        INSERT INTO products (name, sku, price, image)
-        VALUES (${product.name}, ${product.sku}, ${product.price}, ${product.image})
-        ON CONFLICT (id) DO NOTHING;
-      `;
-      }),
-    );
-
-    console.log(`Seeded ${insertedProducts.length} products`);
-
-    return {
-      createTable,
-      products: insertedProducts
-    };
-  } catch (error) {
-    console.error('Error seeding products:', error);
-    throw error;
-  }
-}
-
 async function main() {
   const client = await db.connect();
 
@@ -230,8 +170,6 @@ async function main() {
   await seedCustomers(client);
   await seedInvoices(client);
   await seedRevenue(client);
-  await seedCartLines(client);
-  await seedProducts(client);
 
   await client.end();
 }
