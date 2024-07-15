@@ -42,12 +42,12 @@ export default function Drawer({ checkoutData }: { checkoutData: CheckoutData })
           <div className="border-t border-gray-200 bg-white p-4">
             <div className="flex items-center justify-between gap-6 space-y-0">
               <ResponsiveImage
-                desktop={{ src: productLine.image, width: 40, height: 40 }}
-                mobile={{ src: productLine.image, width: 40, height: 40 }}
-                alt={productLine.name}
+                desktop={{ src: productLine.product.image, width: 40, height: 40 }}
+                mobile={{ src: productLine.product.image, width: 40, height: 40 }}
+                alt={productLine.product.name}
               />
               <div className="w-full min-w-0 flex-1 space-y-4 max-w-md">
-                {productLine.qty} x {productLine.name}
+                {productLine.qty} x {productLine.product.name}
                 <div className="flex items-center gap-4">
                   <button onClick={() => remove(productLine.sku)} type="button"
                           className="inline-flex items-center text-sm font-medium text-red-600 hover:underline ">
@@ -59,7 +59,7 @@ export default function Drawer({ checkoutData }: { checkoutData: CheckoutData })
               <div className="flex items-center justify-end">
                 <div className="text-end order-4 w-20">
                   <p
-                    className="text-base font-bold text-gray-900 ">{formatCurrency(productLine.price * 100 * productLine.qty)}</p>
+                    className="text-base font-bold text-gray-900 ">{formatCurrency(productLine.product.price * 100 * productLine.qty)}</p>
                 </div>
               </div>
             </div>

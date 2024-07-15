@@ -1,38 +1,37 @@
-import { QueryResultRow, sql } from "@vercel/postgres";
 import { getSessionData } from './session'
-import { UUID } from "node:crypto";
+import type { CartLine } from "@prisma/client"
+import { PrismaClient } from "@prisma/client";
 
-export async function getCartId(): Promise<UUID | undefined> {
+const prisma = new PrismaClient()
+
+export async function getCartId(): Promise<string> {
   const session = await getSessionData()
-  return session?.cart?.id
+  return session?.cart?.id.toString()
 }
 
 export async function fetchCartLines() {
   const cartId = await getCartId()
-  try {
-    return await sql`
-      SELECT *
-      FROM cart_lines
-             JOIN products ON cart_lines.sku = products.sku
-      WHERE cart_lines.cart_id = ${cartId}`;
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch cart lines data.');
-  }
+  return cartId ?
+    prisma.cartLine.findMany({
+      where: { cart_id: { equals: cartId } },
+      include: { product: true }
+    })
+    : [];
 }
 
 export async function fetchCheckoutData() {
   const cartLines = await fetchCartLines()
-  const itemsCount: number = cartLines.rows.reduce((accumulator: number, currentValue: QueryResultRow) => accumulator + currentValue.qty, 0);
+  const itemsCount: number = cartLines.reduce((accumulator: number, currentValue: CartLine) => accumulator + currentValue.qty, 0);
   const discountRate: number = 10
-  const total: number = cartLines.rows.reduce((accumulator: number, currentValue: QueryResultRow) => accumulator + currentValue.qty * currentValue.price, 0);
+  // @ts-ignore
+  const total: number = cartLines.reduce((accumulator: number, currentValue: CartLine) => accumulator + currentValue.qty * currentValue.product.price, 0);
   const discount: number = total * discountRate / 100
   const shipping: number = 6.99
   const grandTotal: number = total - discount + shipping
   const tax: number = total * 0.2
 
   let productLines: any = {}
-  cartLines.rows.map(cartLine => {
+  cartLines.map((cartLine: any) => {
     const isNew = !productLines[cartLine.sku]
     productLines[cartLine.sku] = isNew ? cartLine : productLines[cartLine.sku]
     productLines[cartLine.sku].qty += isNew ? 0 : cartLine.qty
@@ -41,34 +40,29 @@ export async function fetchCheckoutData() {
   return {
     totals: {
       itemsCount: itemsCount, total: total, discount: discount, shipping: shipping, tax: tax, grandTotal: grandTotal
-    }, cartLines: cartLines.rows, productLines: productLines
+    }, cartLines: cartLines, productLines: productLines
   };
 }
 
 export async function addToCart(sku: string, qty: number) {
-  try {
-    const cartId = await getCartId()
-    await sql`
-      INSERT INTO cart_lines (cart_id, sku, qty)
-      VALUES (${cartId}, ${sku}, ${qty})`
-    return await fetchCheckoutData()
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to add to cart.');
-  }
+  const cartId = await getCartId()
+  await prisma.cartLine.create({
+    data: {
+      cart_id: cartId,
+      sku: sku,
+      qty: qty
+    },
+  })
+  return await fetchCheckoutData()
 }
 
 export async function removeFromCart(sku: string) {
-  try {
-    const cartId = await getCartId()
-    await sql`
-      DELETE
-      FROM cart_lines
-      WHERE cart_id = ${cartId}
-        AND sku = ${sku}`
-    return await fetchCheckoutData()
-  } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to add to cart.');
-  }
+  const cartId = await getCartId()
+  console.log(cartId)
+  await prisma.$queryRaw`
+    DELETE
+    FROM "CartLine"
+    WHERE cart_id::text = ${cartId}
+      AND sku = ${sku}`
+  return await fetchCheckoutData()
 }

@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("POSTGRES_PRISMA_URL")
+}
+
+model CartLine {
+  id      String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  cart_id String  @db.Uuid
+  sku     String  @db.VarChar(255)
+  qty     Int     @default(0) @db.SmallInt
+  product Product @relation(fields: [sku], references: [sku], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Product {
+  id       String     @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name     String     @db.VarChar(255)
+  sku      String     @unique @db.VarChar(255)
+  price    Float
+  image    String    @db.VarChar(255)
+  CartLine CartLine[]
+}
