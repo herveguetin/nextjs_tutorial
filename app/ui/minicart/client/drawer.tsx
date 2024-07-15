@@ -8,7 +8,7 @@ import { ShoppingCartIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import ResponsiveImage from '@/app/ui/image';
 import { formatCurrency } from "@/app/lib/utils";
 import { removeFromCart } from "@/app/lib/checkout/ajax";
-import { useLockBodyScroll, useToggle } from 'react-use'
+import { useKeyPressEvent, useLockBodyScroll, useToggle } from 'react-use'
 
 export default function Drawer({ checkoutData }: { checkoutData: CheckoutData }) {
   const [loadedData, setLoadedData] = useState(checkoutData);
@@ -31,6 +31,9 @@ export default function Drawer({ checkoutData }: { checkoutData: CheckoutData })
     toggleLocked()
     setIsVisible(false)
   }
+
+  useKeyPressEvent('Escape', onClose)
+
   const remove = async (sku: string) => {
     const checkoutData = await removeFromCart(sku)
     setLoadedData(checkoutData)
@@ -122,12 +125,14 @@ export default function Drawer({ checkoutData }: { checkoutData: CheckoutData })
   }
 
   return (<>
-    <div id="drawer-right-example"
-         className={clsx('fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform bg-white w-full border border-l-gray-200 shadow-xl md:w-[28rem]', {
-           'translate-x-full': !isVisible, 'translate-x-0': isVisible,
-         })}
-         tabIndex={-1}
-         aria-labelledby="drawer-right-label"
+    <aside className={clsx(
+      'fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform bg-white w-full border border-l-gray-200 shadow-xl md:w-[28rem]',
+      {
+        'translate-x-full': !isVisible, 'translate-x-0': isVisible,
+      }
+    )}
+           tabIndex={-1}
+           aria-labelledby="drawer-right-label"
     >
 
       {/* Header */}
@@ -146,6 +151,6 @@ export default function Drawer({ checkoutData }: { checkoutData: CheckoutData })
       {/* Content */}
       {loadedData.totals.itemsCount > 0 ? <CartContent/> : <EmptyCart/>}
 
-    </div>
+    </aside>
   </>);
 }
